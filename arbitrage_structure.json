@@ -1,0 +1,253 @@
+{
+  "root": "/Users/adam/PycharmProjects/nautilus_trader/arbitrage_tools",
+  "relative_to": "/Users/adam/PycharmProjects/nautilus_trader/arbitrage_tools",
+  "extracted_at": "2025-06-25T17:38:14.640412",
+  "folders": [
+    {
+      "name": "monitors",
+      "path": "./arbitrage_tools/monitors",
+      "relative_path": "monitors"
+    },
+    {
+      "name": "docs",
+      "path": "./arbitrage_tools/docs",
+      "relative_path": "docs"
+    },
+    {
+      "name": "csv_output",
+      "path": "./arbitrage_tools/csv_output",
+      "relative_path": "csv_output"
+    },
+    {
+      "name": "examples",
+      "path": "./arbitrage_tools/examples",
+      "relative_path": "examples"
+    },
+    {
+      "name": "scripts",
+      "path": "./arbitrage_tools/scripts",
+      "relative_path": "scripts"
+    }
+  ],
+  "files": [
+    {
+      "name": "__init__.py",
+      "path": "./arbitrage_tools/__init__.py",
+      "relative_path": "__init__.py",
+      "size": 622,
+      "size_human": "622.0B"
+    },
+    {
+      "name": "README.md",
+      "path": "./arbitrage_tools/README.md",
+      "relative_path": "README.md",
+      "size": 4625,
+      "size_human": "4.5KB"
+    },
+    {
+      "name": "run_live_monitor.sh",
+      "path": "./arbitrage_tools/run_live_monitor.sh",
+      "relative_path": "run_live_monitor.sh",
+      "size": 1016,
+      "size_human": "1016.0B"
+    },
+    {
+      "name": "live_market_monitor.py",
+      "path": "./arbitrage_tools/monitors/live_market_monitor.py",
+      "relative_path": "monitors/live_market_monitor.py",
+      "size": 18586,
+      "size_human": "18.2KB"
+    },
+    {
+      "name": "working_signal_monitor.py",
+      "path": "./arbitrage_tools/monitors/working_signal_monitor.py",
+      "relative_path": "monitors/working_signal_monitor.py",
+      "size": 9878,
+      "size_human": "9.6KB"
+    },
+    {
+      "name": "__init__.py",
+      "path": "./arbitrage_tools/monitors/__init__.py",
+      "relative_path": "monitors/__init__.py",
+      "size": 481,
+      "size_human": "481.0B"
+    },
+    {
+      "name": "signal_monitor.py",
+      "path": "./arbitrage_tools/monitors/signal_monitor.py",
+      "relative_path": "monitors/signal_monitor.py",
+      "size": 14980,
+      "size_human": "14.6KB"
+    },
+    {
+      "name": "demo_signal_monitor.py",
+      "path": "./arbitrage_tools/monitors/demo_signal_monitor.py",
+      "relative_path": "monitors/demo_signal_monitor.py",
+      "size": 23387,
+      "size_human": "22.8KB"
+    },
+    {
+      "name": "simple_signal_monitor.py",
+      "path": "./arbitrage_tools/monitors/simple_signal_monitor.py",
+      "relative_path": "monitors/simple_signal_monitor.py",
+      "size": 4809,
+      "size_human": "4.7KB"
+    },
+    {
+      "name": "JSON_LOGGING_GUIDE.md",
+      "path": "./arbitrage_tools/docs/JSON_LOGGING_GUIDE.md",
+      "relative_path": "docs/JSON_LOGGING_GUIDE.md",
+      "size": 6393,
+      "size_human": "6.2KB"
+    },
+    {
+      "name": "CSV_OUTPUT_README.md",
+      "path": "./arbitrage_tools/docs/CSV_OUTPUT_README.md",
+      "relative_path": "docs/CSV_OUTPUT_README.md",
+      "size": 4157,
+      "size_human": "4.1KB"
+    },
+    {
+      "name": "ARBITRAGE_SIGNAL_MONITOR_README.md",
+      "path": "./arbitrage_tools/docs/ARBITRAGE_SIGNAL_MONITOR_README.md",
+      "relative_path": "docs/ARBITRAGE_SIGNAL_MONITOR_README.md",
+      "size": 7770,
+      "size_human": "7.6KB"
+    },
+    {
+      "name": "consolidated_monitor_log_20250623_171159.json",
+      "path": "./arbitrage_tools/csv_output/consolidated_monitor_log_20250623_171159.json",
+      "relative_path": "csv_output/consolidated_monitor_log_20250623_171159.json",
+      "size": 844,
+      "size_human": "844.0B"
+    },
+    {
+      "name": "consolidated_monitor_log_20250623_171142.json",
+      "path": "./arbitrage_tools/csv_output/consolidated_monitor_log_20250623_171142.json",
+      "relative_path": "csv_output/consolidated_monitor_log_20250623_171142.json",
+      "size": 834,
+      "size_human": "834.0B"
+    },
+    {
+      "name": "consolidated_monitor_log_20250623_171128.json",
+      "path": "./arbitrage_tools/csv_output/consolidated_monitor_log_20250623_171128.json",
+      "relative_path": "csv_output/consolidated_monitor_log_20250623_171128.json",
+      "size": 836,
+      "size_human": "836.0B"
+    },
+    {
+      "name": "consolidated_monitor_log_20250623_171235.json",
+      "path": "./arbitrage_tools/csv_output/consolidated_monitor_log_20250623_171235.json",
+      "relative_path": "csv_output/consolidated_monitor_log_20250623_171235.json",
+      "size": 1205,
+      "size_human": "1.2KB"
+    },
+    {
+      "name": "consolidated_monitor_log_20250623_171214.json",
+      "path": "./arbitrage_tools/csv_output/consolidated_monitor_log_20250623_171214.json",
+      "relative_path": "csv_output/consolidated_monitor_log_20250623_171214.json",
+      "size": 836,
+      "size_human": "836.0B"
+    },
+    {
+      "name": "consolidated_monitor_log_20250623_171306.json",
+      "path": "./arbitrage_tools/csv_output/consolidated_monitor_log_20250623_171306.json",
+      "relative_path": "csv_output/consolidated_monitor_log_20250623_171306.json",
+      "size": 1205,
+      "size_human": "1.2KB"
+    },
+    {
+      "name": "live_arbitrage_example.py",
+      "path": "./arbitrage_tools/examples/live_arbitrage_example.py",
+      "relative_path": "examples/live_arbitrage_example.py",
+      "size": 3654,
+      "size_human": "3.6KB"
+    },
+    {
+      "name": "api_keys_example.txt",
+      "path": "./arbitrage_tools/examples/api_keys_example.txt",
+      "relative_path": "examples/api_keys_example.txt",
+      "size": 675,
+      "size_human": "675.0B"
+    },
+    {
+      "name": "run_live_monitor.py",
+      "path": "./arbitrage_tools/scripts/run_live_monitor.py",
+      "relative_path": "scripts/run_live_monitor.py",
+      "size": 2338,
+      "size_human": "2.3KB"
+    },
+    {
+      "name": "run_demo_monitor.py",
+      "path": "./arbitrage_tools/scripts/run_demo_monitor.py",
+      "relative_path": "scripts/run_demo_monitor.py",
+      "size": 3032,
+      "size_human": "3.0KB"
+    },
+    {
+      "name": "__init__.py",
+      "path": "./arbitrage_tools/scripts/__init__.py",
+      "relative_path": "scripts/__init__.py",
+      "size": 81,
+      "size_human": "81.0B"
+    },
+    {
+      "name": "test_env.py",
+      "path": "./arbitrage_tools/scripts/test_env.py",
+      "relative_path": "scripts/test_env.py",
+      "size": 1968,
+      "size_human": "1.9KB"
+    },
+    {
+      "name": "analyze_json_log.py",
+      "path": "./arbitrage_tools/scripts/analyze_json_log.py",
+      "relative_path": "scripts/analyze_json_log.py",
+      "size": 10734,
+      "size_human": "10.5KB"
+    },
+    {
+      "name": "analyze_csv_data.py",
+      "path": "./arbitrage_tools/scripts/analyze_csv_data.py",
+      "relative_path": "scripts/analyze_csv_data.py",
+      "size": 5367,
+      "size_human": "5.2KB"
+    },
+    {
+      "name": "test_arbitrage_advanced.py",
+      "path": "./arbitrage_tools/scripts/test_arbitrage_advanced.py",
+      "relative_path": "scripts/test_arbitrage_advanced.py",
+      "size": 4861,
+      "size_human": "4.7KB"
+    },
+    {
+      "name": "test_arbitrage.py",
+      "path": "./arbitrage_tools/scripts/test_arbitrage.py",
+      "relative_path": "scripts/test_arbitrage.py",
+      "size": 1541,
+      "size_human": "1.5KB"
+    },
+    {
+      "name": "test_arbitrage_simple.py",
+      "path": "./arbitrage_tools/scripts/test_arbitrage_simple.py",
+      "relative_path": "scripts/test_arbitrage_simple.py",
+      "size": 3730,
+      "size_human": "3.6KB"
+    },
+    {
+      "name": "simple_live_monitor.py",
+      "path": "./arbitrage_tools/scripts/simple_live_monitor.py",
+      "relative_path": "scripts/simple_live_monitor.py",
+      "size": 10330,
+      "size_human": "10.1KB"
+    },
+    {
+      "name": "test_csv_output.py",
+      "path": "./arbitrage_tools/scripts/test_csv_output.py",
+      "relative_path": "scripts/test_csv_output.py",
+      "size": 977,
+      "size_human": "977.0B"
+    }
+  ],
+  "total_files": 31,
+  "total_folders": 5
+}

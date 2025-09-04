@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  arbitrage-tools:
+    build:
+      context: .
+      dockerfile: aws-infrastructure/docker/Dockerfile
+    container_name: nautilus-arbitrage-local
+    environment:
+      # Database Configuration
+      - DB_HOST=${DB_HOST:-localhost}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-nautilus_arbitrage}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD}
+      
+      # API Keys (from your .env file)
+      - BINANCE_API_KEY=${BINANCE_API_KEY}
+      - BINANCE_SECRET_KEY=${BINANCE_SECRET_KEY}
+      - COINBASE_API_KEY=${COINBASE_API_KEY}
+      - COINBASE_SECRET_KEY=${COINBASE_SECRET_KEY}
+      
+      # Application Configuration
+      - ENVIRONMENT=local
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - DATA_DIR=/app/data
+      - LOGS_DIR=/app/logs
+      - CSV_OUTPUT_DIR=/app/csv_output
+      
+    volumes:
+      # Mount local directories for data persistence
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./csv_output:/app/csv_output
+      
+      # Mount the arbitrage tools for development
+      - ./arbitrage_tools:/app/arbitrage_tools
+      - ./strategies:/app/strategies
+      
+    ports:
+      - "8000:8000"  # Health check endpoint
+      
+    command: ["python", "-m", "arbitrage_tools.monitors.signal_monitor"]
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Optional: Local PostgreSQL for testing (if you want to test locally first)
+  postgres-local:
+    image: postgres:17.6
+    container_name: nautilus-postgres-local
+    environment:
+      - POSTGRES_DB=nautilus_arbitrage
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=local_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./schema/sql:/docker-entrypoint-initdb.d
+    profiles:
+      - local-db  # Only start with --profile local-db
+
+volumes:
+  postgres_data:

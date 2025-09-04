@@ -211,7 +211,12 @@ build_docker_image() {
     
     log_info "Building Docker image for $env environment..."
     
+    log_info "Current directory before cd: $(pwd)"
+    log_info "PROJECT_ROOT: $PROJECT_ROOT"
     cd "$PROJECT_ROOT"
+    log_info "Current directory after cd: $(pwd)"
+    log_info "Contents of current directory:"
+    ls -la | head -10
     
     # Build the image
     docker build -f "$DOCKER_DIR/Dockerfile" -t "nautilus-arbitrage:$env" .
@@ -331,6 +336,28 @@ if [ -z "$ENVIRONMENT" ]; then
 fi
 
 validate_environment "$ENVIRONMENT"
+
+# Load environment variables from .env file
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+
+# Load .env file if it exists
+if [ -f "$PROJECT_ROOT/aws-infrastructure/.env" ]; then
+    log_info "Loading environment variables from .env file"
+    source "$PROJECT_ROOT/aws-infrastructure/scripts/load-env.sh"
+    
+    # Override command line arguments with .env values if they exist
+    if [ -n "${ENVIRONMENT:-}" ]; then
+        ENVIRONMENT="$ENVIRONMENT"
+    fi
+    if [ -n "${AWS_REGION:-}" ]; then
+        AWS_REGION="$AWS_REGION"
+    fi
+else
+    log_warning ".env file not found. Using command line arguments only."
+    log_info "To use .env file, copy env.example to .env and configure your values:"
+    echo "  cp aws-infrastructure/env.example aws-infrastructure/.env"
+fi
 
 # Main deployment flow
 log_info "Starting deployment for $ENVIRONMENT environment in $AWS_REGION region"

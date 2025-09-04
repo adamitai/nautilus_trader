@@ -15,12 +15,7 @@ terraform {
   }
   
   # Configure remote state storage
-  backend "s3" {
-    # This will be configured per environment
-    # bucket = "nautilus-arbitrage-terraform-state-${var.environment}"
-    # key    = "terraform.tfstate"
-    # region = "us-west-2"
-  }
+  # Backend configuration is handled by backend.tf file
 }
 
 # Configure the AWS Provider
@@ -43,6 +38,7 @@ data "aws_availability_zones" "available" {
 }
 
 data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 # Local values
 locals {
@@ -82,6 +78,45 @@ resource "aws_kms_key" "main" {
 resource "aws_kms_alias" "main" {
   name          = "alias/${local.name_prefix}"
   target_key_id = aws_kms_key.main.key_id
+}
+
+# KMS Key Policy for CloudWatch Logs
+resource "aws_kms_key_policy" "main" {
+  key_id = aws_kms_key.main.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "Enable IAM User Permissions"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+        Action   = "kms:*"
+        Resource = "*"
+      },
+      {
+        Sid    = "Allow CloudWatch Logs"
+        Effect = "Allow"
+        Principal = {
+          Service = "logs.${data.aws_region.current.name}.amazonaws.com"
+        }
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+        Condition = {
+          ArnEquals = {
+            "kms:EncryptionContext:aws:logs:arn" = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/ecs/${local.name_prefix}*"
+          }
+        }
+      }
+    ]
+  })
 }
 
 # Networking Module
@@ -147,7 +182,9 @@ module "storage" {
   
   # Security
   db_password = random_password.db_password.result
-  kms_key_id  = aws_kms_key.main.key_id
+  kms_key_id  = aws_kms_key.main.arn
+  rds_security_group_id = module.security.rds_security_group_id
+  elasticache_security_group_id = module.security.elasticache_security_group_id
   
   tags = local.common_tags
 }
@@ -181,6 +218,8 @@ module "compute" {
   task_execution_role_arn = module.security.ecs_task_execution_role_arn
   task_role_arn          = module.security.ecs_task_role_arn
   security_group_ids     = [module.security.ecs_security_group_id]
+  secrets_manager_arn    = module.security.secrets_manager_arn
+  kms_key_id            = aws_kms_key.main.arn
   
   # Load Balancer
   enable_load_balancer = var.enable_load_balancer
@@ -203,6 +242,18 @@ module "monitoring" {
   
   # SNS Topic for alerts
   sns_topic_arn = module.security.sns_topic_arn
+  
+  # Log group name
+  log_group_name = module.compute.cloudwatch_log_group_name
+  
+  # ALB ARN suffix
+  alb_arn_suffix = module.compute.load_balancer_arn != null ? split("/", module.compute.load_balancer_arn)[1] : ""
+  
+  # RDS identifier
+  rds_identifier = module.storage.rds_identifier
+  
+  # ElastiCache cluster ID
+  elasticache_cluster_id = module.storage.elasticache_endpoint != null ? split(".", module.storage.elasticache_endpoint)[0] : ""
   
   tags = local.common_tags
 }

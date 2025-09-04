@@ -28,8 +28,9 @@ from nautilus_trader.model.enums import BarAggregation
 from nautilus_trader.model.enums import PriceType
 from nautilus_trader.model.identifiers import Symbol
 from nautilus_trader.model.identifiers import Venue
-from nautilus_trader.trading.config import TradingNodeConfig
-from nautilus_trader.trading.node import TradingNode
+from nautilus_trader.live.config import TradingNodeConfig
+from nautilus_trader.live.node import TradingNode
+from nautilus_trader.common.config import LoggingConfig
 
 
 class ArbitrageSignalMonitor:
@@ -49,16 +50,17 @@ class ArbitrageSignalMonitor:
         # Load environment variables
         load_dotenv()
         
+        # Configure data clients for each exchange
+        data_clients = self._setup_data_clients()
+        
         # Initialize trading node
         self.node = TradingNode(
             config=TradingNodeConfig(
                 trader_id="SIGNAL-MONITOR-001",
-                log_level="INFO",
+                logging=LoggingConfig(log_level="INFO"),
+                data_clients=data_clients,
             )
         )
-        
-        # Configure data clients for each exchange
-        self._setup_data_clients()
         
         # CSV file setup
         if self.csv_output:
@@ -66,31 +68,28 @@ class ArbitrageSignalMonitor:
         
     def _setup_data_clients(self):
         """Setup data clients for all exchanges."""
+        data_clients = {}
         
         # Binance Data Client
-        self.node.add_data_client_config(
-            BINANCE,
-            BinanceDataClientConfig(
-                api_key=os.getenv("BINANCE_API_KEY"),
-                api_secret=os.getenv("BINANCE_API_SECRET"),
-                account_type=BinanceAccountType.SPOT,
-                us=False,
-            ),
+        data_clients[BINANCE] = BinanceDataClientConfig(
+            api_key=os.getenv("BINANCE_API_KEY"),
+            api_secret=os.getenv("BINANCE_API_SECRET"),
+            account_type=BinanceAccountType.SPOT,
+            us=False,
         )
         
         # Bybit Data Client
-        self.node.add_data_client_config(
-            BYBIT,
-            BybitDataClientConfig(
-                api_key=os.getenv("BYBIT_API_KEY"),
-                api_secret=os.getenv("BYBIT_API_SECRET"),
-                product_type=BybitProductType.SPOT,
-                testnet=False,
-            ),
+        data_clients[BYBIT] = BybitDataClientConfig(
+            api_key=os.getenv("BYBIT_API_KEY"),
+            api_secret=os.getenv("BYBIT_API_SECRET"),
+            product_type=BybitProductType.SPOT,
+            testnet=False,
         )
         
         # Note: OKX adapter might not be fully ready yet
         # We'll monitor Binance and Bybit for now
+        
+        return data_clients
         
     def _setup_csv_files(self):
         """Setup CSV files for data output."""

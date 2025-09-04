@@ -67,7 +67,7 @@ output "private_route_table_ids" {
 
 output "database_route_table_id" {
   description = "ID of the database route table"
-  value       = aws_route_table.database[0].id
+  value       = aws_route_table.database.id
 }
 
 output "vpc_endpoint_s3_id" {

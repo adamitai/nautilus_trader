@@ -269,7 +269,7 @@ resource "aws_ecs_service" "main" {
 
   load_balancer {
     target_group_arn = var.enable_load_balancer ? aws_lb_target_group.main[0].arn : null
-    container_name   = var.name_prefix
+    container_name   = "${var.name_prefix}-backend"
     container_port   = var.container_port
   }
 

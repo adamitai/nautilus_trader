@@ -54,6 +54,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "main" {
   rule {
     id     = "delete_old_versions"
     status = "Enabled"
+    
+    filter {}
 
     noncurrent_version_expiration {
       noncurrent_days = 30
@@ -67,6 +69,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "main" {
   rule {
     id     = "transition_to_ia"
     status = "Enabled"
+    
+    filter {}
 
     transition {
       days          = 30
@@ -119,7 +123,7 @@ resource "aws_db_instance" "main" {
 
   # Engine
   engine         = "postgres"
-  engine_version = var.db_engine_version
+  engine_version = "17.6"
   instance_class = var.db_instance_class
 
   # Storage
@@ -196,7 +200,7 @@ resource "aws_elasticache_subnet_group" "main" {
 
 # ElastiCache Parameter Group
 resource "aws_elasticache_parameter_group" "main" {
-  family = "redis7.x"
+  family = "redis7"
   name   = "${var.name_prefix}-cache-params"
 
   parameter {

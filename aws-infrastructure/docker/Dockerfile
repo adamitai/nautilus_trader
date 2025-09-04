@@ -18,13 +18,14 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy requirements first for better caching
-COPY requirements.txt .
+COPY aws-infrastructure/docker/requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY . .
+COPY arbitrage_tools/ ./arbitrage_tools/
+COPY strategies/ ./strategies/
 
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash app \

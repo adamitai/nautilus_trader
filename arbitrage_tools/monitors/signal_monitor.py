@@ -82,7 +82,6 @@ class ArbitrageSignalMonitor:
         data_clients[BYBIT] = BybitDataClientConfig(
             api_key=os.getenv("BYBIT_API_KEY"),
             api_secret=os.getenv("BYBIT_API_SECRET"),
-            product_type=BybitProductType.SPOT,
             testnet=False,
         )
         

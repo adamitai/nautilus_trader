@@ -1,0 +1,39 @@
+{
+  "family": "nautilus-arbitrage-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::033716510055:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "nautilus-arbitrage-container",
+      "image": "033716510055.dkr.ecr.us-east-1.amazonaws.com/nautilus-arbitrage:latest",
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/nautilus-arbitrage",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "environment": [
+        {
+          "name": "ENVIRONMENT",
+          "value": "prod"
+        },
+        {
+          "name": "AWS_REGION",
+          "value": "us-east-1"
+        }
+      ]
+    }
+  ]
+}

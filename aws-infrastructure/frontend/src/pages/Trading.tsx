@@ -143,7 +143,7 @@ const Trading: React.FC = () => {
       case 'executing': return <LinearProgress />;
       case 'executed': return <CheckCircle />;
       case 'failed': return <Error />;
-      default: return null;
+      default: return <Warning />;
     }
   };
 

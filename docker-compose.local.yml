@@ -1,37 +1,43 @@
+# Nautilus Trader Arbitrage Tools - Local Development Docker Compose
 version: '3.8'
 
 services:
-  arbitrage-tools:
+  # Main application
+  arbitrage-monitor:
     build:
       context: .
       dockerfile: aws-infrastructure/docker/Dockerfile
     container_name: nautilus-arbitrage-local
     environment:
       # Database Configuration
-      - DB_HOST=${DB_HOST:-localhost}
+      - DB_HOST=${DB_HOST:-postgres}
       - DB_PORT=${DB_PORT:-5432}
       - DB_NAME=${DB_NAME:-nautilus_arbitrage}
-      - DB_USER=${DB_USER:-postgres}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER:-nautilus}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
       
       # API Keys (from your .env file)
       - BINANCE_API_KEY=${BINANCE_API_KEY}
-      - BINANCE_SECRET_KEY=${BINANCE_SECRET_KEY}
-      - COINBASE_API_KEY=${COINBASE_API_KEY}
-      - COINBASE_SECRET_KEY=${COINBASE_SECRET_KEY}
+      - BINANCE_API_SECRET=${BINANCE_API_SECRET}
+      - BYBIT_API_KEY=${BYBIT_API_KEY}
+      - BYBIT_API_SECRET=${BYBIT_API_SECRET}
+      - OKX_API_KEY=${OKX_API_KEY}
+      - OKX_API_SECRET=${OKX_API_SECRET}
+      - OKX_PASSPHRASE=${OKX_PASSPHRASE}
       
       # Application Configuration
-      - ENVIRONMENT=local
-      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ENVIRONMENT=${ENVIRONMENT:-local}
+      - LOG_LEVEL=${LOG_LEVEL:-DEBUG}
       - DATA_DIR=/app/data
       - LOGS_DIR=/app/logs
       - CSV_OUTPUT_DIR=/app/csv_output
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
       
     volumes:
       # Mount local directories for data persistence
       - ./data:/app/data
       - ./logs:/app/logs
-      - ./csv_output:/app/csv_output
+      - ./arbitrage_tools/csv_output:/app/csv_output
       
       # Mount the arbitrage tools for development
       - ./arbitrage_tools:/app/arbitrage_tools
@@ -40,8 +46,13 @@ services:
     ports:
       - "8000:8000"  # Health check endpoint
       
-    command: ["python", "-m", "arbitrage_tools.monitors.signal_monitor"]
+    command: ["python", "arbitrage_tools/api_server.py"]
     
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - arbitrage-network
     restart: unless-stopped
     
     healthcheck:
@@ -51,21 +62,81 @@ services:
       retries: 3
       start_period: 60s
 
-  # Optional: Local PostgreSQL for testing (if you want to test locally first)
-  postgres-local:
-    image: postgres:17.6
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
     container_name: nautilus-postgres-local
     environment:
-      - POSTGRES_DB=nautilus_arbitrage
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=local_password
+      - POSTGRES_DB=${DB_NAME:-nautilus_arbitrage}
+      - POSTGRES_USER=${DB_USER:-nautilus}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./schema/sql:/docker-entrypoint-initdb.d
+    networks:
+      - arbitrage-network
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: nautilus-redis-local
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - arbitrage-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # Grafana for monitoring (optional)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: nautilus-grafana-local
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./aws-infrastructure/monitoring/grafana:/etc/grafana/provisioning
+    networks:
+      - arbitrage-network
+    restart: unless-stopped
     profiles:
-      - local-db  # Only start with --profile local-db
+      - monitoring  # Only start with --profile monitoring
+
+  # Prometheus for metrics (optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: nautilus-prometheus-local
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./aws-infrastructure/monitoring/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME:-200h}'
+      - '--web.enable-lifecycle'
+    networks:
+      - arbitrage-network
+    restart: unless-stopped
+    profiles:
+      - monitoring  # Only start with --profile monitoring
 
 volumes:
   postgres_data:
+  redis_data:
+  grafana_data:
+  prometheus_data:
+
+networks:
+  arbitrage-network:
+    driver: bridge

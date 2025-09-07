@@ -6,20 +6,39 @@ import {
   IconButton,
   Box,
   Chip,
-  Avatar,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
   Notifications as NotificationsIcon,
   AccountCircle as AccountCircleIcon,
   TrendingUp as TrendingUpIcon,
+  Logout as LogoutIcon,
 } from '@mui/icons-material';
+import { useAuth } from '../contexts/AuthContext';
 
 interface NavbarProps {
   onMenuClick: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
+  const { user, logout } = useAuth();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    handleMenuClose();
+  };
+
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
@@ -62,9 +81,37 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
             <NotificationsIcon />
           </IconButton>
           
-          <IconButton color="inherit">
+          <IconButton
+            color="inherit"
+            onClick={handleMenuOpen}
+            aria-label="account menu"
+          >
             <AccountCircleIcon />
           </IconButton>
+          
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem disabled>
+              <Typography variant="body2" color="text.secondary">
+                Logged in as: {user}
+              </Typography>
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+              <LogoutIcon sx={{ mr: 1 }} />
+              Logout
+            </MenuItem>
+          </Menu>
         </Box>
       </Toolbar>
     </AppBar>

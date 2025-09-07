@@ -29,13 +29,24 @@ logs/
 *.tar.gz*
 *.zip
 
-# Data
+# Data files (but allow config files)
 *.parquet
+tests/test_data/**/*.csv
+tests/test_data/**/*.json
+tests/test_data/**/*.zst
+tests/test_data/**/*.gz
+tests/test_data/**/*.bz2
+tests/integration_tests/**/*.csv
+tests/integration_tests/**/*.json
 
 # IntelliJ and VSCode project
 *.iml
 .idea/
 .vscode/
+*.code-workspace
+.settings/
+.project
+.classpath
 
 # Benchmarking and coverage
 .benchmarks*
@@ -58,6 +69,12 @@ logs/
 requirements*
 venv*/
 __pycache__/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
 
 # Build environment and temp
 _build/
@@ -65,6 +82,10 @@ build/
 dist/
 env/
 *temp/
+*.tmp
+*.temp
+.cache/
+.tmp/
 
 # System and editor specific
 .cursorignore
@@ -74,6 +95,52 @@ CLAUDE.md
 CODEX.md
 PERF.JSON
 output.json
+Thumbs.db
+*.swp
+*.swo
+*~
+.#*
+
+# Frontend build artifacts
+aws-infrastructure/frontend/node_modules/
+aws-infrastructure/frontend/build/
+aws-infrastructure/frontend/dist/
+aws-infrastructure/frontend/.next/
+aws-infrastructure/frontend/.nuxt/
+aws-infrastructure/frontend/.cache/
+aws-infrastructure/frontend/.parcel-cache/
+
+# Docker and deployment
+docker-compose.override.yml
+.env.local
+.env.production
+.env.development
+docker.env
+*.dockerignore
+
+# AWS deployment artifacts
+aws-infrastructure/.env
+aws-infrastructure/terraform/.terraform/
+aws-infrastructure/terraform/*.tfstate
+aws-infrastructure/terraform/*.tfstate.backup
+aws-infrastructure/terraform/*.tfplan
+aws-infrastructure/terraform/terraform.tfvars
+aws-infrastructure/logs/
+aws-infrastructure/tmp/
+
+# API keys and secrets
+api_keys.json
+*.pem
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# Arbitrage tools specific
+arbitrage_tools/csv_output/
+arbitrage_tools/logs/
+arbitrage_tools/data/
+arbitrage_tools/tmp/
 
 # Nautilus specific
 .ipynb_checkpoints/

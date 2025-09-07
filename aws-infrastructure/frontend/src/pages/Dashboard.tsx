@@ -14,16 +14,17 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Alert,
 } from '@mui/material';
 import {
   TrendingUp,
   TrendingDown,
   AccountBalance,
   Speed,
-  Warning,
   CheckCircle,
 } from '@mui/icons-material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { healthCheck, getSystemStatus } from '../services/api';
 
 // Mock data - replace with real API calls
 const mockData = {
@@ -56,11 +57,34 @@ const mockData = {
 
 const Dashboard: React.FC = () => {
   const [data, setData] = useState(mockData);
+  const [systemStatus, setSystemStatus] = useState<any>(null);
+  const [healthStatus, setHealthStatus] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const fetchSystemData = async () => {
+      try {
+        setLoading(true);
+        const [health, status] = await Promise.all([
+          healthCheck(),
+          getSystemStatus()
+        ]);
+        setHealthStatus(health);
+        setSystemStatus(status);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch system data:', err);
+        setError('Failed to connect to backend system');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSystemData();
+
     // Simulate real-time updates
     const interval = setInterval(() => {
-      // In a real app, this would fetch data from your API
       setData(prevData => ({
         ...prevData,
         stats: {
@@ -112,6 +136,21 @@ const Dashboard: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Trading Dashboard
       </Typography>
+      
+      {/* System Status Alert */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
+      
+      {systemStatus && (
+        <Alert severity="success" sx={{ mb: 3 }}>
+          Backend System Connected - Environment: {systemStatus.environment} | 
+          Log Level: {systemStatus.log_level} | 
+          Database: {systemStatus.database_host}
+        </Alert>
+      )}
       
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>

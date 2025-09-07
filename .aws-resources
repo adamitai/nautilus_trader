@@ -1,0 +1,4 @@
+VPC_ID=vpc-0766b48a1c1899a8b
+SUBNET_ID=subnet-065c44647723875ec
+SG_ID=sg-01425a1f43d48417e
+ECR_URI=033716510055.dkr.ecr.us-east-1.amazonaws.com/nautilus-arbitrage:latest
